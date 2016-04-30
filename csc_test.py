@@ -38,6 +38,12 @@ while True:
     tool.expect('Notification handle = .*')
 
     rval = tool.after.split()
-    print int(rval[5] + rval[6], 16)
+    wheel_rev = int(reduce(lambda x,y:x+y, rval[9:5:-1]), 16)
+    last_wheel_event = int(reduce(lambda x,y:x+y, rval[11:9:-1]), 16)
+    crank_rev = int(reduce(lambda x,y:x+y, rval[13:11:-1]), 16)
+    last_crank_event = int(reduce(lambda x,y:x+y, rval[15:13:-1]), 16)
+
+    print "wheel rev %d, last wheel event %d, crank rev %d, last crank event %d"\
+    % (wheel_rev, last_wheel_event, crank_rev, last_crank_event)
 
 
