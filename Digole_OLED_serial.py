@@ -96,7 +96,7 @@ class Digole(object):
         self.displayStr(s)
 
     def moveCursor(self, x, y):
-        self.write_command("TP", x, y)
+        self.write_command("ETP", x, y)
 
     def displayStr(self, s):
         self.write_command("TT", s)
