@@ -20,6 +20,7 @@ def import_bitmap(filename, base=10):
         http://www.digole.com/tools/PicturetoC_Hex_converter.php """
     # load data from file into local variable
     bitmap_file = [l.strip() for l in open(filename, 'r')]
+    row_len = len(bitmap_file)
     # remove "," and combine the lists
     bitmap_list = reduce(lambda x,y:x+y, [b.split(",") \
             for b in bitmap_file])
@@ -31,7 +32,8 @@ def import_bitmap(filename, base=10):
         bitmap = [int(b[2:], base) for b in bitmap_list]
     else:
         bitmap = [int(b, base) for b in bitmap_list]
-    return bitmap
+    col_len = len(bitmap) / row_len
+    return (bitmap, row_len, col_len)
 
 
 class Digole(object):
@@ -54,7 +56,7 @@ class Digole(object):
         self.DISP_H = height
 
     def exit(self):
-        self.close()
+        self.conn.close()
 
     def constrain(self, a, a_min, a_max):
         """ constrain a within [a_min, a_max] """
@@ -527,7 +529,9 @@ if __name__ == "__main__":
     # OLED.drawStr(0, 1, "Hello World")
     # OLED.drawLine(0, 5, 5, 10)
     # OLED.drawBox(10, 50, 10, 10)
-    bitmap = import_bitmap('eye.dec', 10)
-    OLED.drawBitmap256(10,10,64,42,bitmap)
-
-
+    bitmap, row_len, col_len = import_bitmap('eye.hex', 16)
+    OLED.drawBitmap256(60, 50, col_len, row_len, bitmap)
+    OLED.write_command("", chr(0x00))
+    # time.sleep(5)
+    # OLED.clearScreen()
+    OLED.exit()
