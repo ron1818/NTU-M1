@@ -521,7 +521,7 @@ class Digole(object):
 
     #### Flash ####
 if __name__ == "__main__":
-    OLED = Digole("/dev/ttyAMA0", width=160, height=128)
+    OLED = Digole("/dev/ttyMFD1", width=160, height=128)
     OLED.clearScreen()
     # OLED.setFont(6)
     # OLED.drawStr(0, 0, "Hello World")
@@ -529,9 +529,9 @@ if __name__ == "__main__":
     # OLED.drawStr(0, 1, "Hello World")
     # OLED.drawLine(0, 5, 5, 10)
     # OLED.drawBox(10, 50, 10, 10)
-    bitmap, row_len, col_len = import_bitmap('eye.hex', 16)
-    OLED.drawBitmap256(60, 50, col_len, row_len, bitmap)
-    OLED.write_command("", chr(0x00))
+    time.sleep(1)
+    bitmap, row_len, col_len = import_bitmap('speedometer.hex', 16)
+    OLED.drawBitmap256(5, 16, col_len, row_len, bitmap)
     # time.sleep(5)
     # OLED.clearScreen()
     OLED.exit()
