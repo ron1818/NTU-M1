@@ -531,7 +531,7 @@ if __name__ == "__main__":
     # OLED.drawBox(10, 50, 10, 10)
     time.sleep(1)
     bitmap, row_len, col_len = import_bitmap('speedometer.hex', 16)
-    OLED.drawBitmap256(5, 16, col_len, row_len, bitmap)
+    OLED.drawBitmap256(5, 16, 150, 96, bitmap)
     # time.sleep(5)
     # OLED.clearScreen()
     OLED.exit()
