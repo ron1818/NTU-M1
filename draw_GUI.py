@@ -45,9 +45,10 @@ def draw_gui_1(OLED, scale=1, font=18):
     OLED.write_command("BGC", 0x00)
 
 
-def draw_gui_2(OLED, draw_fn, quardrant=2):
+def draw_in_quardrant(OLED, draw_fn, quardrant=2):
     """ draw a particular function at the 1/4 quardrant,
-    follow cartesian (1,2,3,4) CCW"""
+    follow cartesian (1,2,3,4) CCW,
+    notice that for the child draw fn, scale must be made"""
 
     if quardrant == 1:
         OLED.setDrawWindow(80, 0, 80, 64)
@@ -66,5 +67,4 @@ if __name__ == "__main__":
     OLED.clearScreen()
     OLED.resetDrawWindow()
     OLED.setDrawWindow(0,0,80,64)
-    draw_gui_2(OLED, draw_gui_1, 1)
-    draw_gui_2(OLED, draw_gui_1, 3)
+    draw_in_quardrant(OLED, draw_gui_1, 1)
