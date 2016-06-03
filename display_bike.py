@@ -1,11 +1,9 @@
 #! /usr/bin/env python
 from Digole_OLED_serial import *
 from BLE import *
-from thingspeak import *
+import thingspeak
 
-def draw_ui():
-    # connection
-    OLED = Digole("/dev/ttyMFD1", width=160, height=128)
+def draw_ui(OLED):
     # clear screen
     OLED.clearScreen()
     # set font
@@ -40,7 +38,10 @@ def write_thingspeak(field_id, field_var):
     channel = thingspeak.channel()
     channel.update(field_id, field_var)
 
-draw_ui()
+
+# connection
+OLED = Digole("/dev/ttyMFD1", width=160, height=128)
+draw_ui(OLED)
 
 # connect BLE
 HRM = HeartRate(sys.argv[1], debug=True) 
@@ -55,6 +56,8 @@ CSC.subscribe()
 OLED.setColor(0xFF)
 OLED.write_command("BGC", 0x00)
 try:
+    OLED.flush()
+    counter = 0
     while True:
         OLED.drawStr(105, 52, "   ")
         OLED.drawStr(62, 82, "    ")
@@ -63,14 +66,17 @@ try:
         speed, cadence = CSC.__str__().strip().split(",")
         print ", ".join([hrm, speed, cadence])
         
-        write_thingspeak([1, 2, 3], [speed, cadence, hrm])
-
         OLED.drawStr(105, 52, hrm)
         OLED.drawStr(62, 82, speed)
         OLED.drawStr(25, 52, cadence)
 
+        if counter == 60:
+            write_thingspeak([1, 2, 3], [speed, cadence, hrm])
+            counter = 0
+        counter += 1
         time.sleep(1)
 except KeyboardInterrupt:
+    OLED.flush()
     HRM.unsubscribe()
     HRM.disconnect()
     CSC.unsubscribe()

@@ -58,6 +58,9 @@ class Digole(object):
     def exit(self):
         self.conn.close()
 
+    def flush(self):
+        self.conn.flushInput()
+
     def constrain(self, a, a_min, a_max):
         """ constrain a within [a_min, a_max] """
         if a < a_min:
