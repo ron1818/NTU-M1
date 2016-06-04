@@ -22,6 +22,7 @@ Team **Ironman**: Ren Ye, Zhu Qingchang, Chen Zhenghua
 + I2C端口在edison arduino板上面不可以用，需要解决方案
 + 把OLED用SPI连接，释放出UART端口
 + 用arduino nano接IMU，测试撞击
+
 ####target 19 June####
 + 两片edison实现wifi互传
 + 两片edison实现BLE互传
