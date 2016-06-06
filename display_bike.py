@@ -14,7 +14,9 @@ def write_thingspeak(field_id, field_var):
 OLED = Digole("/dev/ttyMFD1", width=160, height=128)
 
 # draw framework
-draw_gui_1(OLED)
+OLED.clearScreen()
+draw_in_quardrant(OLED, draw_gui_1, 3)
+# draw_gui_1(OLED)
 
 # connect BLE
 HRM = HeartRate(sys.argv[1], debug=True) 
@@ -34,19 +36,21 @@ try:
     OLED.flush()
     counter = 0
     while True:
-        OLED.drawStr(105, 52, "   ")
-        OLED.drawStr(62, 82, "    ")
-        OLED.drawStr(25, 52, "   ")
-        hrm = HRM.__str__().strip()
-        speed, cadence = CSC.__str__().strip().split(",")
-        print ", ".join([hrm, speed, cadence])
-        
-        OLED.drawStr(105, 52, hrm)
-        OLED.drawStr(62, 82, speed)
-        OLED.drawStr(25, 52, cadence)
+        data_dict={"hrm": ["   ", 105, 52],\
+                "speed": ["    ", 62, 82],\
+                "cadence": [25, 52]}
 
+        display_data(OLED, **data_dict)
+        # OLED.drawStr(105, 52, "   ")
+        # OLED.drawStr(62, 82, "    ")
+        # OLED.drawStr(25, 52, "   ")
+        data_dict["hrm"][0] = HRM.__str__().strip()
+        data_dict["speed"][0], data_dict["cadence"][0] = CSC.__str__().strip().split(",")
+        # print ", ".join([hrm, speed, cadence])
+        display_data(OLED, **data_dict)
+        
         if counter == 60:
-            write_thingspeak([1, 2, 3], [speed, cadence, hrm])
+            write_thingspeak([1, 2, 3], [value[0] for (key, value) in a.iteritems()])
             counter = 0
         counter += 1
         time.sleep(1)

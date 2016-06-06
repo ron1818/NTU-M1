@@ -1,4 +1,5 @@
 from Digole_OLED_serial import *
+import time
 
 def draw_gui_1(OLED, scale=1, font=18):
     """ three circles, two at the top, one at the bottom,
@@ -39,10 +40,49 @@ def draw_gui_1(OLED, scale=1, font=18):
     OLED.drawCircle(int(78*scale), int(80*scale), int(40*scale), 1)
     OLED.write_command("BGC", 0xE1)
     OLED.setColor(0x1c)
-    OLED.drawStr(int(62*scale), int(70*scale), "Km/h")
+    OLED.drawStr(int(62*scale), int(70*scale), "Kph")
+
     # set background to black
     OLED.setColor(0xFF)
     OLED.write_command("BGC", 0x00)
+
+
+def display_data(OLED, scale=1,  **data_dict):
+    """ display data into their positions,
+    data_dict: key: data_name, [value, x, y] """
+    for key, value in data_dict.iteritems():
+        data, x, y = value
+        OLED.drawStr(data, int(x*scale), int(y*scale))
+
+
+def display_timedate(OLED, scale=1, font=18):
+    """ display time and date, also time elapsed """
+    # set font
+    scaled_font = int(font*scale)
+    if 0 <= scaled_font < 8:
+        scaled_font = 6
+    elif 8<= scaled_font < 15:
+        scaled_font = 10
+    elif 15<= scaled_font < 19:
+        scaled_font = 18
+    else:
+        scaled_font = font # no scale
+
+    OLED.setFont(scaled_font)
+
+    # time in wk dd-mm-yy format
+    OLED.drawStr(int(1*scale), int(18*scale), time.strftime("%a %d-%m-%y"))
+    OLED.drawStr(int(1*scale), int(36*scale), time.strftime("%H:%M:%S"))
+
+    # time elapsed
+    global t0
+    m, s = divmod(time.time()-t0, 60)
+    h, m = divmod(m, 60)
+    # print "%d:%02d:%02d" % (h, m, s)
+    OLED.drawStr(int(1*scale), int(54*scale), "%02d:%02d:%02d" % (h, m, s))
+
+
+
 
 
 def draw_in_quardrant(OLED, draw_fn, quardrant=2):
@@ -65,6 +105,8 @@ if __name__ == "__main__":
     # connection
     OLED = Digole("/dev/ttyMFD1", width=160, height=128)
     OLED.clearScreen()
-    OLED.resetDrawWindow()
-    OLED.setDrawWindow(0,0,80,64)
-    draw_in_quardrant(OLED, draw_gui_1, 1)
+    t0 = time.time()
+    draw_in_quardrant(OLED, draw_gui_1, 3)
+    while True:
+        draw_in_quardrant(OLED, display_timedate, 1)
+        time.sleep(1)
