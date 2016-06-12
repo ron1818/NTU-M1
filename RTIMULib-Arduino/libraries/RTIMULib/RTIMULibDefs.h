@@ -29,14 +29,14 @@
 
 //  IMU enable defs - only one should be enabled, the rest commented out
 
-#define MPU9150_68                      // MPU9150 at address 0x68
+// #define MPU9150_68                      // MPU9150 at address 0x68
 //#define MPU9150_69                      // MPU9150 at address 0x69
 //#define MPU9250_68                      // MPU9250 at address 0x68
 //#define MPU9250_69                      // MPU9250 at address 0x69
 //#define LSM9DS0_6a                      // LSM9DS0 at address 0x6a
 //#define LSM9DS0_6b                      // LSM9DS0 at address 0x6b
 //#define GD20HM303D_6a                   // GD20H + M303D at address 0x6a
-//#define GD20HM303D_6b                   // GD20H + M303D at address 0x6b
+#define GD20HM303D_6b                   // GD20H + M303D at address 0x6b
 //#define GD20HM303DLHC_6a                // GD20H + M303DLHC at address 0x6a
 //#define GD20HM303DLHC_6b                // GD20H + M303DLHC at address 0x6b
 //#define GD20M303DLHC_6a                 // GD20 + M303DLHC at address 0x6a
@@ -58,7 +58,7 @@
 
 //#define BMP180                              // BMP180
 //#define LPS25H_5c                           // LPS25H at standard address
-//#define LPS25H_5d                           // LPS25H at option address
+#define LPS25H_5d                           // LPS25H at option address
 //#define MS5611_76                           // MS5611 at standard address
 //#define MS5611_77                           // MS5611 at option address
 
