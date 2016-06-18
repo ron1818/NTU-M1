@@ -29,6 +29,7 @@
 #include "RTPressure.h"
 #include "CalLib.h"
 #include <EEPROM.h>
+#include <Math.h>
 
 RTIMU *imu;                                           // the IMU object
 RTPressure *pressure;                                 // the pressure object
@@ -46,11 +47,15 @@ RTIMUSettings settings;                               // the settings object
 unsigned long lastDisplay;
 unsigned long lastRate;
 int sampleCount;
-
+int LEDPin=13;
+int EdisonPin = 5;
 void setup()
 {
     int errcode;
-  
+    pinMode(LEDPin, OUTPUT);
+    digitalWrite(LEDPin, LOW);
+    pinMode(EdisonPin, OUTPUT);
+    digitalWrite(EdisonPin, LOW);
     Serial.begin(SERIAL_PORT_SPEED);
     Wire.begin();
     imu = RTIMU::createIMU(&settings);                        // create the imu object
@@ -118,19 +123,46 @@ void loop()
             sampleCount = 0;
             lastRate = now;
         }
-        if ((now - lastDisplay) >= DISPLAY_INTERVAL) {
-            lastDisplay = now;
-            RTMath::display("Gyro:", (RTVector3&)imu->getGyro());                // gyro data
-            RTMath::display("Accel:", (RTVector3&)imu->getAccel());              // accel data
-            RTMath::display("Mag:", (RTVector3&)imu->getCompass());              // compass data
-            RTMath::displayRollPitchYaw("Pose:", (RTVector3&)fusion.getFusionPose()); // fused output
-            
-            if (pressure->pressureRead(latestPressure, latestTemperature)) {
-                Serial.print(", pressure: "); Serial.print(latestPressure);
-                Serial.print(", temperature: "); Serial.print(latestTemperature);
-            }
-            Serial.println();
+        //Serial.println((abs(((RTVector3&)imu->getAccel()).x()) + abs(((RTVector3&)imu->getAccel()).y()) + abs(((RTVector3&)imu->getAccel()).z())));
+        
+        if((abs(((RTVector3&)imu->getAccel()).x()) + abs(((RTVector3&)imu->getAccel()).y()) + abs(((RTVector3&)imu->getAccel()).z())) > 6.0)
+        {
+          Serial.print("fall\n");
+          digitalWrite(LEDPin, HIGH);
+          digitalWrite(EdisonPin, HIGH);
+          delay(5000);
+          digitalWrite(LEDPin, LOW);
+          digitalWrite(EdisonPin, LOW);
         }
+        
+        /*if(abs(((RTVector3&)fusion.getFusionPose()).x())*180.0/3.14<105.0)
+        {
+          Serial.print("SideFall\n");
+        }
+        if(abs(((RTVector3&)fusion.getFusionPose()).y())*180.0/3.14>60.0)
+        {
+          Serial.print("FowardFall\n");
+        }*/
+        
+        /*if ((now - lastDisplay) >= DISPLAY_INTERVAL) {
+            lastDisplay = now;
+            //RTMath::display("Gyro:", (RTVector3&)imu->getGyro());                // gyro data
+            //RTMath::display("Accel:", (RTVector3&)imu->getAccel());              // accel data
+            //RTMath::display("Mag:", (RTVector3&)imu->getCompass());              // compass data
+            RTMath::displayRollPitchYaw("Pose:", (RTVector3&)fusion.getFusionPose()); // fused output
+
+            //Serial.print(((RTVector3&)imu->getAccel()).x());
+
+            
+            //if (pressure->pressureRead(latestPressure, latestTemperature)) {
+            //    Serial.print(", pressure: "); Serial.print(latestPressure);
+            //    Serial.print(", temperature: "); Serial.print(latestTemperature);
+            //}
+            Serial.println();
+        }*/
     }
 }
+
+
+
 
