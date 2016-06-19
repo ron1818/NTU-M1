@@ -106,14 +106,11 @@ def display_trip(OLED, scale=1, font=18, stopflag=False):
     OLED.write_command("BGC", 0x00)
 
 
-def display_data(OLED, scale=1, font=18, **data_dict):
+def display_data(OLED, scale=1, font=18, xoffset=20, yoffset=8, **data_dict):
     """ display data into their positions,
     data_dict: key: data_name, [value, x, y] """
     # scale font
     scale_font(OLED, scale, font)
-
-    xoffset = 12
-    yoffset = 8
 
     # set mode
     OLED.setMode("C")
@@ -145,7 +142,7 @@ def display_timedate(OLED, scale=1, font=18):
 
 def display_alert(OLED, scale=1, isfall=0):
     """ display fall signal, green for OK, red for fall """
-    if isfall:
+    if isfall != 0:
         OLED.setColor(0x40)
         OLED.write_command("BGC", 0x40)
     else:
@@ -193,6 +190,6 @@ if __name__ == "__main__":
     while True:
         draw_in_quardrant(OLED, display_trip, 2, 0.5, 18)
         draw_in_quardrant(OLED, display_timedate,1, 0.5, 18)
-        draw_in_quardrant(OLED, display_data, 3, 0.5, 18, **perform_dict)
+        draw_in_quardrant(OLED, display_data, 3, 0.5, 18, 20, 16, **perform_dict)
         # draw_in_quardrant(OLED, display_alert, 4, 0.5, 1)
         time.sleep(1)
