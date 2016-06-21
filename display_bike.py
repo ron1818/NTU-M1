@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 import time
-import random
+# import random
 from Digole_OLED_serial import *
 from BLE import *
 import draw_GUI
@@ -32,17 +32,17 @@ draw_in_quardrant(OLED, display_perform, 3, 0.5, 18, **perform_dict)
 draw_in_quardrant(OLED, display_alert, 4, 0.5, 0)
 
 # connect BLE
-# HRM = HeartRate("D0:F1:73:6F:94:D9", debug=True) 
-# HRM = HeartRate("E9:E3:B8:EC:D4:64", debug=True) 
-# HRM.main()
+HRM = HeartRate("D0:F1:73:6F:94:D9", debug=True) 
+# HRM = HeartRate(sys.argv[1], debug=True) 
+HRM.main()
 
-# CSC = CSC("E9:E3:B8:EC:D4:64", debug=True)
+CSC = CSC("E9:E3:B8:EC:D4:64", debug=True)
 # CSC = CSC(sys.argv[2], debug=True)
-# CSC.main()
-# HRM.connect()
-# HRM.subscribe()
-# CSC.connect()
-# CSC.subscribe()
+CSC.main()
+HRM.connect()
+HRM.subscribe()
+CSC.connect()
+CSC.subscribe()
 
 # keep background color
 OLED.setColor(0xFF)
@@ -58,10 +58,10 @@ try:
         draw_in_quardrant(OLED, display_data, 3, 0.5, 18, 24, 8, **perform_dict_empty)
         # print(isfall.next())
 
-        perform_dict["1BPM"][0] = '{0:.1f}'.format(100+random.uniform(-50, 20))
-        perform_dict["3KPH"][0], perform_dict["2RPM"][0] = ['{0:.1f}'.format(80+random.uniform(-10, 15)), '{0:.1f}'.format(90+random.uniform(-30,10))]
+        perform_dict["1BPM"][0] = HRM.__str__().strip()
+        perform_dict["3KPH"][0], perform_dict["2RPM"][0] = CSC.__str__().strip().split(",")
 
-        draw_GUI.speed = int(100+random.uniform(-50, 20))
+        draw_GUI.speed = int(perform_dict["1BPM"][0])
 
         draw_in_quardrant(OLED, display_data, 3, 0.5, 18, 24, 8, **perform_dict)
         isfall=fall_detection_sys(11)
@@ -76,7 +76,7 @@ except KeyboardInterrupt:
     OLED.setColor(0xFF)
     OLED.write_command("BGC", 0x00)
     OLED.flush()
-    # HRM.unsubscribe()
-    # HRM.disconnect()
-    # CSC.unsubscribe()
-    # CSC.disconnect()
+    HRM.unsubscribe()
+    HRM.disconnect()
+    CSC.unsubscribe()
+    CSC.disconnect()
